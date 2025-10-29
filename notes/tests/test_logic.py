@@ -1,9 +1,21 @@
-# notes/tests/test_logic.py
+"""Модуль тестирования бизнес-логики приложения заметок.
+
+Содержит тесты для проверки:
+
+Создания заметок авторизованными и анонимными пользователями
+
+Валидации уникальности slug при создании заметок
+
+Редактирования и удаления заметок с проверкой прав доступа
+
+Изоляции данных между разными пользователями
+"""
+
 from http import HTTPStatus
 
-from django.contrib.auth import get_user_model
-from django.test import Client, TestCase
-from django.urls import reverse
+from django.contrib.auth import get_user_model  # type: ignore
+from django.test import Client, TestCase  # type: ignore
+from django.urls import reverse  # type: ignore
 
 from notes.forms import WARNING
 from notes.models import Note

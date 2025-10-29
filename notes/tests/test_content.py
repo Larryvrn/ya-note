@@ -1,7 +1,16 @@
-# notes/tests/test_content.py
-from django.test import TestCase
-from django.urls import reverse
-from django.contrib.auth import get_user_model
+"""
+Модуль тестирования views приложения заметок.
+
+Содержит тесты для проверки:
+- Домашней страницы и её содержимого
+- Страницы со списком заметок (изоляция данных, сортировка)
+- Страницы деталей заметки (права доступа, отображение контента)
+- Форм создания и редактирования заметок
+- Страницы успешного выполнения операции
+"""
+from django.test import TestCase  # type: ignore
+from django.urls import reverse  # type: ignore
+from django.contrib.auth import get_user_model  # type: ignore
 
 from notes.models import Note
 from notes.forms import NoteForm
@@ -62,7 +71,7 @@ class TestNotesListPage(TestCase):
         """Создаём фикстуры для тестов страницы со списком заметок."""
         cls.author = User.objects.create(username='Автор')
         cls.other_user = User.objects.create(username='Другой пользователь')
-        
+
         # Создаём заметки для автора
         cls.author_notes = []
         for i in range(3):
@@ -73,7 +82,7 @@ class TestNotesListPage(TestCase):
                 slug=f'avtorskaya-{i}'
             )
             cls.author_notes.append(note)
-        
+
         # Создаём заметки для другого пользователя
         for i in range(2):
             Note.objects.create(
@@ -154,7 +163,7 @@ class TestNoteDetailPage(TestCase):
         cls.reader = User.objects.create(username='Читатель')
 
         cls.note = Note.objects.create(
-            title='Тестовая заметка', 
+            title='Тестовая заметка',
             text='Это текст тестовой заметки для проверки отображения.',
             author=cls.author,
             slug='testovaya-zametka'
@@ -272,7 +281,7 @@ class TestNoteForms(TestCase):
 
     def test_authorized_client_has_form_on_add_page(self):
         """
-        Проверяет наличие формы у авторизованного пользователя на странице добавления.
+        Проверяет наличие формы у авториз. пользователя на стр. добавления.
 
         Проверяет:
         - Возврат HTTP статуса 200
@@ -314,7 +323,8 @@ class TestNoteForms(TestCase):
         Проверяет запрет редактирования чужих заметок.
 
         Сценарий:
-        - Пользователь пытается получить доступ к форме редактирования чужой заметки
+        - Пользователь пытается получить доступ к форме
+        редактирования чужой заметки
         - Система возвращает HTTP статус 404
 
         Ожидаемый результат:
@@ -346,7 +356,7 @@ class TestNoteForms(TestCase):
             'slug': 'novaya-zametka'
         }
         response = self.client.post(self.add_url, data)
-        # После успешного создания должно быть перенаправление 
+        # После успешного создания должно быть перенаправление
         # на страницу успеха
         self.assertRedirects(response, self.success_url)
 
